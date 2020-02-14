@@ -11,7 +11,7 @@ canvas { display:block; }
   text-align: center;
   color: white;
   background-color: none;
-  font-size: 5vh;
+  font-size: 3vh;
 }
 #controls {
   margin: 20px;
