@@ -3,6 +3,7 @@ window.addEventListener('resize', resize, false);
 var speeds = [];
 var numValues = 10;
 var radius = 200;
+let hueShift = 0;
 
 function Point(x, y){
   this.x = x;
@@ -23,6 +24,8 @@ function setup(){
 }
 
 function draw(){
+  hueShift = map(sin(frameCount * 0.01), -1, 1, 0, 50);
+
   background(0);
   noFill();
   stroke(100);
@@ -95,8 +98,9 @@ function draw(){
   for (var j = 19; j >= 0; j--){
     push();
     
-    if (j%2 == 1) fill((330 + j), 100, j*4 + 20);
-    else fill(340, 100, 15);
+    var currentHue = (330 + hueShift) % 360;
+    if (j%2 == 1) fill(currentHue, 100, j*4 + 20);
+    else fill(currentHue, 100, 15);
     scale(j/20);
     
     rotate(((20 - j)/20)*((frameCount)/100));
@@ -119,3 +123,55 @@ function resize(){
   resizeCanvas(window.innerWidth, window.innerHeight);
   radius = min(width, height)/2.2;
 }
+
+function wrapLetters() {
+  var poem = document.getElementById("poem");
+  var lines = poem.innerHTML.split(/<br\s*\/?>/i);
+  var newHtml = '';
+
+  lines.forEach(function(line) {
+    var lineHtml = '';
+    for (var i = 0; i < line.length; i++) {
+      if (line[i] === ' ') {
+        lineHtml += ' ';
+      } else {
+        lineHtml += '<span>' + line[i] + '</span>';
+      }
+    }
+    newHtml += lineHtml + '<br>';
+  });
+
+  poem.innerHTML = newHtml;
+}
+
+
+function changeText() {
+  var spans = document.querySelectorAll("#poem span");
+  for (let i = 0; i < spans.length; i++) {
+    setTimeout(function() {
+      spans[i].classList.add("burn-effect");
+    }, i * 10);
+  }
+
+  setTimeout(function() {
+    document.getElementById("poem").innerHTML = `
+    ◊</br>
+    <p>Theseus, my love.
+    </br>Oceans inside of us
+    <br/>each ventricle a harbor, each atrium a sky
+    <br/>scars like stars on your heart a fireball of brilliant memory
+    <br/>and you'll understand it was spelt wrong on purpose
+    <br/>so the letters could be rearranged to our liking
+    <br/>it's our game after all, we play it
+    <br/>and I'll run next to you, until my legs fall off, until I run out of breath
+    <br/>even if I have to carry you or replace each and every plank agian
+    <br/>beacuse the boat didn't matter - the journey did
+    <br/>◊
+    <br/>
+    <br/>When I first wrote that poem I never tought I'd see you agian
+    <br/>It was impossible I thought
+    <br/>Impossible things are often worth doing`;
+  }, spans.length * 10);
+}
+
+wrapLetters();
